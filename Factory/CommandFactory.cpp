@@ -2,6 +2,7 @@
 #include "../Utilities/MyString.h"
 #include "../Commands/Print.h"
 #include "../Commands/SearchByKey.h"
+#include "../Commands/Set.h"
 #include <sstream>
 
 const size_t COMMANDS_COUNT = 13;
@@ -21,9 +22,17 @@ namespace {
             ss.ignore();
         }
     }
+
+    void readData(std::stringstream& ss, MyString& str) {
+        skipWhitespaces(ss);
+        ss.ignore();//reading '\"'
+        char searchedKey[1024];
+        ss.getline(searchedKey, 1024, '\"');
+        str = std::move(searchedKey);//move op= of MyString
+    }
 }
 
-Command* CommandFactory::getCommand(const JsonObject* obj)
+Command* CommandFactory::getCommand(JsonObject* obj)
 {
     char command[1024];
     std::cin>>command;//reading till first space
@@ -39,18 +48,25 @@ Command* CommandFactory::getCommand(const JsonObject* obj)
     return nullptr;
 }
 
-Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,const JsonObject* obj)
+Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,JsonObject* obj)
 {
     switch (typeNumber) {
     case 8: {
         return new Print(obj);
     }
     case 9: {
-        skipWhitespaces(ss);
-        ss.ignore();//reading '\"'
-        char key[1024];
-        ss.getline(key, 1024, '\"');
-        return new SearchByKey(obj,key);
+        MyString searchedKey;
+        readData(ss, searchedKey);
+        
+        return new SearchByKey(obj, searchedKey);
+    }
+    case 10: {
+        MyString filepath;
+        readData(ss, filepath);
+        MyString newValue;
+        readData(ss, newValue);
+
+        return new Set(obj, filepath,newValue);
     }
     }
     return nullptr;

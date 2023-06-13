@@ -1,51 +1,44 @@
 #include "MyString.h"
-#include <cstring>
-
 #pragma warning (disable : 4996)
 
-MyString::MyString() : MyString("") { }
-
-MyString::MyString(size_t size)
+MyString::MyString(size_t capacity)
 {
-	_data = new char[size + 1];
-	this->_size = size;
-}
-MyString::MyString(const char* data)
-{
-	size_t currentSize = strlen(data);
-
-	if (currentSize <= MyString::SSO_MAX_SIZE) //SSO
-	{
-		ssoData[MyString::SSO_MAX_SIZE] = MyString::SSO_MAX_SIZE - currentSize;
-		strcpy(ssoData, data);
-	}
-	else
-	{
-		_size = currentSize;
-		_data = new char[_size + 1];
-		strcpy(_data, data);
-		notUsingSso();
-	}
-}
-void MyString::notUsingSso()
-{
-	ssoData[MyString::SSO_MAX_SIZE] |= (1 << 7);
+	_length = capacity - 1;
+	_data = new char[capacity];
 }
 
-MyString::MyString(MyString&& other) noexcept
+MyString operator+(const MyString& lhs, const MyString& rhs)
 {
-	move(std::move(other));
+	MyString result(lhs._length + rhs._length + 1);
+
+	result[0] = '\0';
+	strcat(result._data, lhs._data);
+	strcat(result._data, rhs._data);
+
+	return result;
 }
 
-MyString& MyString::operator=(MyString&& other) noexcept
+MyString& MyString::operator+=(const MyString& other)
 {
-	if (this != &other)
-	{
-		free();
-		move(std::move(other));
-	}
+	char* result = new char[(_length += other._length) + 1];
+	result[0] = '\0';
+	strcat(result, _data);
+	strcat(result, other._data);
+
+	delete[] _data;
+	_data = result;
 
 	return *this;
+}
+
+MyString::MyString() : MyString(1)
+{
+	_data[0] = '\0';
+}
+
+MyString::MyString(const char* data) : MyString(strlen(data) + 1)
+{
+	strcpy(_data, data);
 }
 
 MyString::MyString(const MyString& other)
@@ -63,128 +56,97 @@ MyString& MyString::operator=(const MyString& other)
 	return *this;
 }
 
-void MyString::move(MyString&& other) {
-	_data = other._data;
-	_size = other._size;
-
-	if (!other.isSso())
-	{
-		other._data = nullptr;
-		notUsingSso();
-	}
-}
 
 void MyString::free()
 {
-	if (!isSso())
-		delete[] _data;
+	delete[] _data;
 	_data = nullptr;
 }
+
 MyString::~MyString()
 {
 	free();
 }
 
-bool MyString::isSso() const
-{
-	return (ssoData[MyString::SSO_MAX_SIZE] & (1 << 7)) == 0;
-}
-
-const char* MyString::c_str() const
-{
-	return isSso() ? ssoData : _data;
-}
-
 size_t MyString::length() const
 {
-	if (isSso())
-	{
-		return MyString::SSO_MAX_SIZE - ssoData[MyString::SSO_MAX_SIZE];
-	}
-	else
-	{
-		size_t realSize = _size;
-		size_t mask = 1;
-		mask = ~(mask << (sizeof(_size) * 8 - 1)); //we remove the bit of the size that shows us that SSO is not applied.
-		return realSize & mask;
-	}
+	return _length;
 }
 
 void MyString::copyFrom(const MyString& other)
 {
-	if (!other.isSso())
-	{
-		_data = new char[other.length() + 1];
-		strcpy(_data, other._data);
-		_size = other._size;
-	}
-	else
-	{
-		strcpy(ssoData, other.ssoData);
-		ssoData[MyString::SSO_MAX_SIZE] = other.ssoData[MyString::SSO_MAX_SIZE]; //copy the size
-	}
+	_length = other._length;
+	_data = new char[_length + 1];
+	strcpy(_data, other._data);
 }
 
-MyString& MyString::operator+=(const MyString& other)
+void MyString::move(MyString&& other) {
+	_data = other._data;
+	other._data = nullptr;
+	_length = other._length;
+}
+
+MyString::MyString(MyString&& other) noexcept
 {
-	size_t newStrSize = length() + other.length();
+	move(std::move(other));
+}
 
-	if (newStrSize <= MyString::SSO_MAX_SIZE)
-	{ //sso is aplied in the current object
-		strcat(ssoData, other.ssoData);
-		ssoData[MyString::SSO_MAX_SIZE] = MyString::SSO_MAX_SIZE - newStrSize;
-	}
-	else
+MyString& MyString::operator=(MyString&& other) noexcept
+{
+	if (this != &other)
 	{
-		char* newData = new char[newStrSize + 1] {'\0'};
-
-		strcpy(newData, c_str());
-		strcat(newData, other.c_str());
-
-		if (!isSso())
-			delete[] _data;
-		_data = newData;
-		_size = newStrSize;
-		notUsingSso();
+		free();
+		move(std::move(other));
 	}
-
 	return *this;
 }
 
-
 char& MyString::operator[](size_t index)
 {
-	return isSso() ? ssoData[index] : _data[index];
+	return _data[index];
 }
 
-char MyString::operator[](size_t index) const
+char MyString::operator[](size_t index) const 
 {
-	return isSso() ? ssoData[index] : _data[index];
-}
-std::ostream& operator<<(std::ostream& os, const MyString& obj)
-{
-	return os << obj.c_str();
+	return _data[index];
 }
 
-MyString operator+(const MyString& lhs, const MyString& rhs)
+MyString MyString::substr(size_t begin, size_t howMany) const
 {
-	size_t newStrSize = lhs.length() + rhs.length();
+	if (begin + howMany > _length)
+		throw std::length_error("Error, Substr out of range");
 
-	if (newStrSize <= MyString::SSO_MAX_SIZE)
-	{
-		MyString res(lhs);
-		res += rhs;
-		return res;
-	}
-	else
-	{
-		MyString res(newStrSize + 1);
-		strcpy(res._data, lhs.c_str());
-		strcat(res._data, rhs.c_str());
-		res.notUsingSso();
-		return res;
-	}
+
+	MyString res(howMany + 1);
+	for (int i = 0; i < howMany; i++)
+		res._data[i] = _data[begin + i];
+	res[howMany] = '\0';
+	return res;
 }
+
+const char* MyString::c_str() const
+{
+	return _data;
+}
+
+std::ostream& operator<<(std::ostream& os, const MyString& str)
+{
+	return os << str.c_str();
+}
+
+std::istream& operator>>(std::istream& is, MyString& str)
+{
+	char buff[1024];
+	is >> buff; // is.getLine(buff, 1024);
+
+	delete[] str._data;
+	str._length = strlen(buff);
+	str._data = new char[str._length + 1];
+	strcpy(str._data, buff);
+	return is;
+}
+
+
 bool operator<(const MyString& lhs, const MyString& rhs)
 {
 	return strcmp(lhs.c_str(), rhs.c_str()) < 0;

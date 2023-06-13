@@ -1,5 +1,5 @@
 #pragma once
-#include "../JSONValues/JsonValue.h"
+#include "../JSONValues/JsonObject.h"
 
 enum class CommandType
 {
@@ -17,10 +17,10 @@ enum class CommandType
 class Command
 {
 protected:
-	const JsonValue* obj;
+	JsonObject* obj;
 public:
 	Command();
-	Command(const JsonValue* obj);
+	Command(JsonObject* obj);
 	virtual void execute() const = 0;
 };
 

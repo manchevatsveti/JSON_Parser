@@ -5,6 +5,7 @@
 
 class JsonArray : public JsonValue
 {
+	///Iterator for JsonArray????
 	Vector<SharedPtr<JsonValue>> values;
 
 public:
@@ -18,6 +19,8 @@ public:
 	JsonValue* clone() const override;
 
 	void print(std::ostream& ofs) const override;
-	void printByKey(const MyString& searchedKey) const override;
+
+	size_t getSize() const;
+	const JsonValue* getElement(size_t index) const;
 };
 

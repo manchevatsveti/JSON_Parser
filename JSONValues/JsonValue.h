@@ -25,7 +25,6 @@ public:
 	JsonValueType getType() const;
 
 	virtual void print(std::ostream& ofs) const = 0;
-	virtual void printByKey(const MyString& searchedKey)const;
 	//virtual void set(std::stringstream& path, const MyString& name);
 };
 

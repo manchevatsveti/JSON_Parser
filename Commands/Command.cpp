@@ -2,9 +2,7 @@
 #include "../JSONValues/JsonValue.h"
 
 Command::Command():obj(nullptr)
-{
-}
+{}
 
-Command::Command(const JsonValue* obj) : obj(obj)
-{
-}
+Command::Command(JsonObject* obj) : obj(obj)
+{}

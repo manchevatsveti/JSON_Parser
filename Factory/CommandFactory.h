@@ -6,7 +6,7 @@
 class CommandFactory
 {
 public:
-	static Command* getCommand(const JsonObject* obj);
-	static Command* commandFactory(int typeNumber,std::stringstream& ss,const JsonObject* obj);
+	static Command* getCommand(JsonObject* obj);
+	static Command* commandFactory(int typeNumber,std::stringstream& ss,JsonObject* obj);
 };
 

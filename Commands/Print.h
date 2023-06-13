@@ -5,7 +5,7 @@
 class Print : public Command
 {
 public:
-	Print(const JsonValue* obj);
+	Print(JsonObject* obj);
 	void execute() const override;
 };
 

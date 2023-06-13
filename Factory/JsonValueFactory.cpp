@@ -14,7 +14,7 @@ namespace {
 		return true;
 	}
 
-	void skipWhitespaces(std::ifstream& ifs) {
+	void skipWhitespaces(std::istream& ifs) {
 
 		while (ifs.peek() == ' ') {
 			ifs.ignore();
@@ -42,7 +42,7 @@ JsonValue* JsonValueFactory::jsonValueFactory(JsonValueType type)
 	return nullptr;
 }
 
-JsonValue* JsonValueFactory::jsonValueFactory(JsonValueType type, std::ifstream& ifs)
+JsonValue* JsonValueFactory::jsonValueFactory(JsonValueType type, std::istream& ifs)
 {
 	switch (type)
 	{
@@ -87,7 +87,7 @@ JsonValue* JsonValueFactory::jsonValueFactory(JsonValueType type, std::ifstream&
 	return nullptr;
 }
 
-JsonValue* JsonValueFactory::parseValue(std::ifstream& ifs)
+JsonValue* JsonValueFactory::parseValue(std::istream& ifs)
 {
 	skipWhitespaces(ifs);
 	char ch = ifs.peek(); // Read the next character
@@ -114,7 +114,7 @@ JsonValue* JsonValueFactory::parseValue(std::ifstream& ifs)
 	return nullptr;
 }
 
-JsonValue* JsonValueFactory::parseObject(std::ifstream& ifs)
+JsonValue* JsonValueFactory::parseObject(std::istream& ifs)
 {
 	JsonObject* object = new JsonObject();//casting?
 	ifs.ignore();//reading "{"
@@ -141,7 +141,7 @@ JsonValue* JsonValueFactory::parseObject(std::ifstream& ifs)
 	return object;
 }
 
-JsonValue* JsonValueFactory::parseArray(std::ifstream& ifs)
+JsonValue* JsonValueFactory::parseArray(std::istream& ifs)
 {
 	JsonArray* array = new JsonArray();
 	ifs.ignore();//reading [
@@ -167,7 +167,7 @@ JsonValue* JsonValueFactory::parseArray(std::ifstream& ifs)
 	return array;
 }
 
-void JsonValueFactory::parseKey(std::ifstream& ifs, MyString& key)
+void JsonValueFactory::parseKey(std::istream& ifs, MyString& key)
 {
 	skipWhitespaces(ifs);
 	char tempKey[1024];

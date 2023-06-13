@@ -8,6 +8,8 @@ class JsonObject : public JsonValue
 {
 	Vector<JsonNode> elements;
 
+	void printArrayByKey(const JsonValue* value, const MyString& searchedKey) const;
+
 public:
 	JsonObject();
 	JsonValue* clone() const override;
@@ -18,7 +20,14 @@ public:
 
 	size_t getNodesCount() const;
 	
-	void printByKey(const MyString& searchedKey) const override;
+	void printByKey(const MyString& searchedKey) const;
+
 	const JsonValue* getElement(int index) const;
+	size_t getIndexByKey(const MyString& key) const;
+
+	void setByKey(const MyString& filepath, const MyString& newValue);
+
+	JsonNode& operator[](size_t index);
+	const JsonNode& operator[](size_t index) const;
 };
 

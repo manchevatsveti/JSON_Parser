@@ -13,4 +13,11 @@ int main() {
 	catch (int& i) {
 
 	}
+
+	try {
+		CommandFactory::getCommand(obj)->execute();
+	}
+	catch (int& i) {
+
+	}
 }

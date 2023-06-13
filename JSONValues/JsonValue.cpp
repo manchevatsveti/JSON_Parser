@@ -8,6 +8,3 @@ JsonValueType JsonValue::getType() const
 {
 	return type;
 }
-
-void JsonValue::printByKey(const MyString& searchedKey) const
-{}

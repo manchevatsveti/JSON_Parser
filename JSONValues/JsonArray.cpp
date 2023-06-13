@@ -39,11 +39,16 @@ void JsonArray::print(std::ostream& ofs) const
 	ofs << "]";
 }
 
-void JsonArray::printByKey(const MyString& searchedKey) const
+size_t JsonArray::getSize() const
 {
-	size_t size = values.getSize();
-
-	for (int i = 0; i < size; i++) {
-		values[i]->printByKey(searchedKey);
-	}
+	return values.getSize();
 }
+
+const JsonValue* JsonArray::getElement(size_t index) const
+{
+	if (index >= values.getSize()) {
+		throw std::out_of_range("Invalid index.");
+	}
+	return values[index].operator->();////NE!!
+}
+
