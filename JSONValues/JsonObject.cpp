@@ -36,6 +36,40 @@ const JsonValueType& JsonObject::getTypeByIndex(size_t index) const
 	return elements[index].getValue()->getType();
 }
 
+void JsonObject::setValueFromPath(const MyString& filepath, JsonValue* newValue)
+{
+	int indexSlashSymbol = findLastIndex(filepath);
+	if (indexSlashSymbol == -1) { //"name"
+		if (getIndexByKey(filepath) == -1) {
+			throw std::logic_error("This value does not exist!");
+		}
+		elements[getIndexByKey(filepath)].setValue(newValue);
+	}
+	else {
+		MyString rootPath = filepath.substr(0, indexSlashSymbol);
+		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
+		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
+		temp->setValueFromPath(subFilepath,newValue);
+	}
+}
+
+const JsonValue* JsonObject::getValueFromPath(const MyString& filepath)
+{
+	int indexSlashSymbol = findLastIndex(filepath);
+	if (indexSlashSymbol == -1) { //"name"
+		if (getIndexByKey(filepath) == -1) {
+			throw std::logic_error("This value does not exist!");
+		}
+		return elements[getIndexByKey(filepath)].getValue();
+	}
+	else {
+		MyString rootPath = filepath.substr(0, indexSlashSymbol);
+		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
+		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
+		temp->getValueFromPath(subFilepath);
+	}
+}
+
 JsonObject::JsonObject() : JsonValue(JsonValueType::OBJECT){}
 
 
@@ -161,10 +195,6 @@ void JsonObject::deleteBypath(const MyString& filepath)
 		}
 
 		removeElement(getIndexByKey(filepath));
-		/*if (getTypeByIndex(getIndexByKey(filepath)) == JsonValueType::ARRAY) {
-			JsonArray* arr = static_cast<JsonArray*>(elements[getIndexByKey(filepath)].getValue());
-			
-		}*/
 	}
 	else {
 		MyString rootPath = filepath.substr(0, indexSlashSymbol);
@@ -172,6 +202,15 @@ void JsonObject::deleteBypath(const MyString& filepath)
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
 		temp->deleteBypath(subFilepath);
 	}
+}
+
+void JsonObject::moveFromTo(const MyString& filePathFrom,const MyString& filePathTo)
+{
+	
+	const JsonValue* valueFrom = getValueFromPath(filePathFrom);
+	setValueFromPath(filePathTo, valueFrom->clone());
+
+	deleteBypath(filePathFrom);
 }
 
 JsonNode& JsonObject::operator[](size_t index)

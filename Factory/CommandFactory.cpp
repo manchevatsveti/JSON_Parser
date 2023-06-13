@@ -5,10 +5,12 @@
 #include "../Commands/Set.h"
 #include "../Commands/Create.h"
 #include "../Commands/Delete.h"
+#include "../Commands/Move.h"
 #include <sstream>
 
 const size_t COMMANDS_COUNT = 13;
-static const MyString commands[COMMANDS_COUNT] = { "open","close","save","saveas","help","exit","validate","print","search","set","create","delete","move" };
+static const MyString commands[COMMANDS_COUNT] = { "open","close","save","saveas","help","exit",
+                                                 "validate","print","search","set","create","delete","move" };
 
 namespace {
     bool isDigit(const char ch) {
@@ -96,6 +98,14 @@ Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,Js
         readData(ss, filepath);
 
         return new Delete(obj, filepath);
+    }
+    case 13: {
+        MyString filepathFrom;
+        readData(ss, filepathFrom);
+        MyString filepathTo;
+        readData(ss, filepathTo);
+
+        return new Move(obj, filepathFrom, filepathTo);
     }
     }
     return nullptr;

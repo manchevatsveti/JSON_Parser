@@ -11,6 +11,9 @@ class JsonObject : public JsonValue
 	void printArrayByKey(const JsonValue* value, const MyString& searchedKey) const;
 	const JsonValueType& getTypeByIndex(size_t index) const;
 
+	void setValueFromPath(const MyString& filepath, JsonValue* newValue);
+	const JsonValue* getValueFromPath(const MyString& filepath);
+
 public:
 	JsonObject();
 	JsonValue* clone() const override;
@@ -30,6 +33,7 @@ public:
 	void setByKey(const MyString& filepath, const MyString& newValue);
 	void createByKey(const MyString& filepath, const MyString& newValue);
 	void deleteBypath(const MyString& filepath);
+	void moveFromTo(const MyString& filePathFrom, const MyString& filePathTo);
 
 	JsonNode& operator[](size_t index);
 	const JsonNode& operator[](size_t index) const;
