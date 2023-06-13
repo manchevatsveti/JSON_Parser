@@ -106,7 +106,7 @@ size_t JsonObject::getIndexByKey(const MyString& key)const
 			return i;
 		}
 	}
-	return -1;//does not throw exception in case we wany to check if value does not exist
+	return -1;//does not throw exception in case we want to check if the value does not exist
 }
 
 void JsonObject::setByKey(const MyString& filepath, const MyString& newValue)
@@ -129,7 +129,6 @@ void JsonObject::createByKey(const MyString& filepath, const MyString& newValue)
 	std::stringstream ss(newValue.c_str());
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) {
-		//create "management/id" ""alo""
 		if (getIndexByKey(filepath) != -1 && getTypeByIndex(getIndexByKey(filepath)) != JsonValueType::ARRAY) {//we can create a value inside an array that already exists
 			throw std::logic_error("This value already exists!");
 		}
