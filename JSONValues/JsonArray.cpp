@@ -14,6 +14,11 @@ void JsonArray::addValue(JsonValue* value)
 	values.pushBack(value);
 }
 
+void JsonArray::removeValue(size_t index)
+{
+	values.popAt(index);
+}
+
 JsonValueType JsonArray::getTypeByIndex(unsigned index) const
 {
 	return values[index]->getType();
@@ -26,17 +31,17 @@ JsonValue* JsonArray::clone() const
 
 void JsonArray::print(std::ostream& ofs) const
 {
-	ofs << "[";
+	ofs << "["<<std::endl;
 	size_t size = values.getSize();
 
 	for (int i = 0; i < size; i++) {
 		values[i]->print(ofs);
 
 		if (i != size - 1) {
-			ofs << ", ";
+			ofs << ", " << std::endl;
 		}
 	}
-	ofs << "]";
+	ofs << "]" << std::endl;
 }
 
 size_t JsonArray::getSize() const

@@ -4,6 +4,7 @@
 #include "../Commands/SearchByKey.h"
 #include "../Commands/Set.h"
 #include "../Commands/Create.h"
+#include "../Commands/Delete.h"
 #include <sstream>
 
 const size_t COMMANDS_COUNT = 13;
@@ -89,6 +90,12 @@ Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,Js
         readValue(ss, newValue);
 
       return new Create(obj, filepath, newValue);
+    }
+    case 12: {
+        MyString filepath;
+        readData(ss, filepath);
+
+        return new Delete(obj, filepath);
     }
     }
     return nullptr;

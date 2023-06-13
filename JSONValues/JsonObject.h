@@ -16,6 +16,7 @@ public:
 	JsonValue* clone() const override;
 
 	void addElement(const MyString& key,JsonValue* value);
+	void removeElement(size_t index);
 
 	void print(std::ostream& ofs) const override;
 
@@ -28,6 +29,7 @@ public:
 
 	void setByKey(const MyString& filepath, const MyString& newValue);
 	void createByKey(const MyString& filepath, const MyString& newValue);
+	void deleteBypath(const MyString& filepath);
 
 	JsonNode& operator[](size_t index);
 	const JsonNode& operator[](size_t index) const;

@@ -51,9 +51,14 @@ void JsonObject::addElement(const MyString& key,JsonValue* value)
 	elements.pushBack(JsonNode(key, value));
 }
 
+void JsonObject::removeElement(size_t index)
+{
+	elements.popAt(index);
+}
+
 void JsonObject::print(std::ostream& ofs) const
 {
-	 ofs << "{";
+	 ofs << "{" << std::endl;
 
 	size_t size = elements.getSize();
 
@@ -62,11 +67,11 @@ void JsonObject::print(std::ostream& ofs) const
 		elements[i].getValue()->print(ofs);
 
 		if (i != size - 1) {
-			ofs << ", ";
+			ofs << ", " << std::endl;
 		}
 	}
 
-	ofs << "}";
+	ofs << "}" << std::endl;
 }
 
 size_t JsonObject::getNodesCount() const
@@ -144,6 +149,28 @@ void JsonObject::createByKey(const MyString& filepath, const MyString& newValue)
 		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
 		temp->createByKey(subFilepath, newValue);
+	}
+}
+
+void JsonObject::deleteBypath(const MyString& filepath)
+{
+	int indexSlashSymbol = findLastIndex(filepath);
+	if (indexSlashSymbol == -1) {
+		if (getIndexByKey(filepath) == -1) {
+			throw std::logic_error("This value does not exist!");
+		}
+
+		removeElement(getIndexByKey(filepath));
+		/*if (getTypeByIndex(getIndexByKey(filepath)) == JsonValueType::ARRAY) {
+			JsonArray* arr = static_cast<JsonArray*>(elements[getIndexByKey(filepath)].getValue());
+			
+		}*/
+	}
+	else {
+		MyString rootPath = filepath.substr(0, indexSlashSymbol);
+		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
+		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
+		temp->deleteBypath(subFilepath);
 	}
 }
 
