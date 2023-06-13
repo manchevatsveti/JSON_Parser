@@ -3,6 +3,7 @@
 #include "../Commands/Print.h"
 #include "../Commands/SearchByKey.h"
 #include "../Commands/Set.h"
+#include "../Commands/Create.h"
 #include <sstream>
 
 const size_t COMMANDS_COUNT = 13;
@@ -23,6 +24,18 @@ namespace {
         }
     }
 
+    void removeQuotes(MyString& str) {
+        str = str.substr(1, str.length() - 2);
+    }
+
+    void readValue(std::stringstream& ss, MyString& str) {
+        skipWhitespaces(ss);
+        char searchedKey[1024];
+        ss.getline(searchedKey, 1024, '\t');
+        str = std::move(searchedKey);//move op= of MyString
+        removeQuotes(str);
+    }
+
     void readData(std::stringstream& ss, MyString& str) {
         skipWhitespaces(ss);
         ss.ignore();//reading '\"'
@@ -30,6 +43,7 @@ namespace {
         ss.getline(searchedKey, 1024, '\"');
         str = std::move(searchedKey);//move op= of MyString
     }
+
 }
 
 Command* CommandFactory::getCommand(JsonObject* obj)
@@ -67,6 +81,14 @@ Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,Js
         readData(ss, newValue);
 
         return new Set(obj, filepath,newValue);
+    }
+    case 11: {
+        MyString filepath;
+        readData(ss, filepath);
+        MyString newValue;
+        readValue(ss, newValue);
+
+      return new Create(obj, filepath, newValue);
     }
     }
     return nullptr;

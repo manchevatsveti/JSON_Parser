@@ -9,6 +9,7 @@ class JsonObject : public JsonValue
 	Vector<JsonNode> elements;
 
 	void printArrayByKey(const JsonValue* value, const MyString& searchedKey) const;
+	const JsonValueType& getTypeByIndex(size_t index) const;
 
 public:
 	JsonObject();
@@ -26,6 +27,7 @@ public:
 	size_t getIndexByKey(const MyString& key) const;
 
 	void setByKey(const MyString& filepath, const MyString& newValue);
+	void createByKey(const MyString& filepath, const MyString& newValue);
 
 	JsonNode& operator[](size_t index);
 	const JsonNode& operator[](size_t index) const;

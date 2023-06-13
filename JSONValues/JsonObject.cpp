@@ -31,6 +31,11 @@ void JsonObject::printArrayByKey(const JsonValue* value, const MyString& searche
 	}
 }
 
+const JsonValueType& JsonObject::getTypeByIndex(size_t index) const
+{
+	return elements[index].getValue()->getType();
+}
+
 JsonObject::JsonObject() : JsonValue(JsonValueType::OBJECT){}
 
 
@@ -101,7 +106,7 @@ size_t JsonObject::getIndexByKey(const MyString& key)const
 			return i;
 		}
 	}
-	throw std::logic_error("This key does not exist!");
+	return -1;//does not throw exception in case we wany to check if value does not exist
 }
 
 void JsonObject::setByKey(const MyString& filepath, const MyString& newValue)
@@ -116,6 +121,30 @@ void JsonObject::setByKey(const MyString& filepath, const MyString& newValue)
 		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol-1);
 		temp->setByKey(subFilepath, newValue);
+	}
+}
+
+void JsonObject::createByKey(const MyString& filepath, const MyString& newValue)
+{
+	std::stringstream ss(newValue.c_str());
+	int indexSlashSymbol = findLastIndex(filepath);
+	if (indexSlashSymbol == -1) {
+		//create "management/id" ""alo""
+		if (getIndexByKey(filepath) != -1 && getTypeByIndex(getIndexByKey(filepath)) != JsonValueType::ARRAY) {//we can create a value inside an array that already exists
+			throw std::logic_error("This value already exists!");
+		}
+		else if (getIndexByKey(filepath) != -1 && getTypeByIndex(getIndexByKey(filepath)) == JsonValueType::ARRAY) {
+			JsonArray* arr = static_cast<JsonArray*>(elements[getIndexByKey(filepath)].getValue());
+			arr->addValue(JsonValueFactory::parseValue(ss));
+		}else {
+			elements.pushBack(JsonNode(filepath, JsonValueFactory::parseValue(ss)));
+		}
+	}
+	else {
+		MyString rootPath = filepath.substr(0, indexSlashSymbol);
+		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
+		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
+		temp->createByKey(subFilepath, newValue);
 	}
 }
 
