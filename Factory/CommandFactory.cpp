@@ -6,11 +6,16 @@
 #include "../Commands/Create.h"
 #include "../Commands/Delete.h"
 #include "../Commands/Move.h"
+#include "../Commands/Open.h"
+#include "../Commands/Close.h"
+#include "../Commands/Exit.h"
+#include "../JsonFileHandler.h"
 #include <sstream>
 
 const size_t COMMANDS_COUNT = 13;
 static const MyString commands[COMMANDS_COUNT] = { "open","close","save","saveas","help","exit",
                                                  "validate","print","search","set","create","delete","move" };
+
 
 namespace {
     bool isDigit(const char ch) {
@@ -49,7 +54,7 @@ namespace {
 
 }
 
-Command* CommandFactory::getCommand(JsonObject* obj)
+Command* CommandFactory::getCommand()
 {
     char command[1024];
     std::cin>>command;//reading till first space
@@ -57,17 +62,32 @@ Command* CommandFactory::getCommand(JsonObject* obj)
     std::cin.getline(buff, 1024, '\n');
     std::stringstream ss(buff);
 
+    static JsonObject* obj;
+    
     for (int i = 0; i < COMMANDS_COUNT; i++) {
         if (command == commands[i]) {
-            return commandFactory(i + 1, ss,obj);
+            return commandFactory(i + 1, ss, obj);
         }
     }
+
     return nullptr;
 }
 
-Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,JsonObject* obj)
+Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,JsonObject*& obj)
 {
     switch (typeNumber) {
+    case 1: {
+        MyString filename;
+        readData(ss, filename);
+
+       return new Open(obj,filename);
+    }
+    case 2: {
+        return new Close(obj);
+    }
+    case 6: {
+        return new Exit();
+    }
     case 8: {
         return new Print(obj);
     }

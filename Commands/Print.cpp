@@ -1,6 +1,6 @@
 #include "Print.h"
 
-Print::Print(JsonObject* obj):Command(obj){}
+Print::Print(JsonObject* obj) :Command(obj) {}
 
 void Print::execute() const
 {
