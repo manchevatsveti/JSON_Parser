@@ -1,0 +1,11 @@
+JSON PARSER
+
+The main idea behind the project is the tree-like construction of a JSON object. Each object contains an ordered pair of JsonNode, which consists of a string Key (the name of the JSON value) and JsonValue (which can be a number, boolean value, string, another object, array, etc.). Accordingly, these JsonValues have a common base class JsonValue and share common logic in their implementation. Another specificity is the JsonArray class, which is a heterogeneous container of values.
+
+The construction of the object (or its parsing) is done through the parseValue function, which recursively calls itself to parse objects and arrays, and the base of this recursion is the values that are literals.
+
+The program also has a CommandFactory, which creates a command based on the parsed input and inherits from the base Command class with a virtual execute function. The specific aspect of this class is that in the getCommand() function, we create a JsonFileHandler (which plays the role of a wrapper class for JsonObject because we can have only one object in a file) and the instance is static (called on the first invocation of the function) and shared among all the commands that will be executed on this object.
+
+Validation is performed before object creation. The entire file is checked, and if it is invalid, an error is thrown. The only validation performed on a created object is the validation of user-inputted data.
+
+The supported commands in the program are: open, save, saveas (not saveAs), exit, print, search, set, create, delete, and move.
