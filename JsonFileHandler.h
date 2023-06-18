@@ -5,7 +5,9 @@
 class JsonFileHandler
 {
 	MyString _filename;
-	JsonObject* obj;//shared ptr??, destr??
+	JsonObject* obj;
+
+	bool isValidFile(const MyString& fileContent) const;
 
 public:
 	JsonFileHandler();

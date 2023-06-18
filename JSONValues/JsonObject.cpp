@@ -2,6 +2,8 @@
 #include "JsonArray.h"
 #include "../Factory/JsonValueFactory.h"
 #include "../JsonFileHandler.h"
+#include "../Utilities/Validation.h"
+#include "../Utilities/Helper.h"
 #include <iostream>
 #include <sstream>
 
@@ -42,7 +44,7 @@ void JsonObject::setValueFromPath(const MyString& filepath, JsonValue* newValue)
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) { //"name"
 		if (getIndexByKey(filepath) == -1) {
-			throw std::logic_error("This value does not exist!");
+			throw std::invalid_argument("This value does not exist!");
 		}
 		elements[getIndexByKey(filepath)].setValue(newValue);
 	}
@@ -57,9 +59,9 @@ void JsonObject::setValueFromPath(const MyString& filepath, JsonValue* newValue)
 const JsonValue* JsonObject::getValueFromPath(const MyString& filepath)
 {
 	int indexSlashSymbol = findLastIndex(filepath);
-	if (indexSlashSymbol == -1) { //"name"
+	if (indexSlashSymbol == -1) { 
 		if (getIndexByKey(filepath) == -1) {
-			throw std::logic_error("This value does not exist!");
+			throw std::invalid_argument("This value does not exist!");
 		}
 		return elements[getIndexByKey(filepath)].getValue();
 	}
@@ -120,28 +122,29 @@ void JsonObject::print(std::ostream& ofs) const
 	ofs << "}" << std::endl;
 }
 
-size_t JsonObject::getNodesCount() const
-{
-	return elements.getSize();
-}
-
 void JsonObject::printByKey(const MyString& searchedKey) const
 {
+	bool keyExists = false;
 	size_t size = elements.getSize();
 	for (int i = 0; i < size; i++) {
 		if (elements[i].getKey() == searchedKey) {
 			elements[i].getValue()->print(std::cout);
 			std::cout << std::endl;
+			keyExists = true;
 		}
 		if (elements[i].getValue()->getType() == JsonValueType::ARRAY) {
 			printArrayByKey(elements[i].getValue(), searchedKey);
 		}
 	}
+
+	if (!keyExists) {
+		throw std::invalid_argument("This key does not exist");
+	}
 }
 
 const JsonValue* JsonObject::getElement(int index) const
 {
-	if (index > getNodesCount()) {
+	if (index > elements.getSize()) {
 		throw std::out_of_range("invalid index entered.");
 	}
 	return elements[index].getValue();
@@ -162,9 +165,16 @@ size_t JsonObject::getIndexByKey(const MyString& key)const
 
 void JsonObject::setByKey(const MyString& filepath, const MyString& newValue)
 {
+	if (!Validation::isValidValue(Helper::removeQuotes(MyString(newValue)))) {
+		throw std::invalid_argument("Invalid value!");
+	}
+
 	std::stringstream ss(newValue.c_str());
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) {
+		if (getIndexByKey(filepath) == -1) {
+			throw std::invalid_argument("This value does not exists!");
+		}
 		elements[getIndexByKey(filepath)].setValue(JsonValueFactory::parseValue(ss));
 	}
 	else {
@@ -181,7 +191,7 @@ void JsonObject::createByKey(const MyString& filepath, const MyString& newValue)
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) {
 		if (getIndexByKey(filepath) != -1 && getTypeByIndex(getIndexByKey(filepath)) != JsonValueType::ARRAY) {//we can create a value inside an array that already exists
-			throw std::logic_error("This value already exists!");
+			throw std::invalid_argument("This value already exists!");
 		}
 		else if (getIndexByKey(filepath) != -1 && getTypeByIndex(getIndexByKey(filepath)) == JsonValueType::ARRAY) {
 			JsonArray* arr = static_cast<JsonArray*>(elements[getIndexByKey(filepath)].getValue());
@@ -203,7 +213,7 @@ void JsonObject::deleteBypath(const MyString& filepath)
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) {
 		if (getIndexByKey(filepath) == -1) {
-			throw std::logic_error("This value does not exist!");
+			throw std::invalid_argument("This value does not exist!");
 		}
 
 		removeElement(getIndexByKey(filepath));
@@ -230,7 +240,7 @@ void JsonObject::saveAs(const MyString& filepath, const MyString& filename)
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) {
 		if (getIndexByKey(filepath) == -1) {
-			throw std::logic_error("This value does not exist!");
+			throw std::invalid_argument("This value does not exist!");
 		}
 		
 		if (getTypeByIndex(getIndexByKey(filepath)) == JsonValueType::OBJECT) {//we can only save objects to files

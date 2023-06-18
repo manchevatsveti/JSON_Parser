@@ -5,22 +5,7 @@
 #include "../JSONValues/JsonArray.h"
 #include "../JSONValues/JsonObject.h"
 #include "../JSONValues/JsonNull.h"
-
-namespace {
-	bool isDigit(const char ch) {
-		if (ch < '0' || ch>'9') {
-			return false;
-		}
-		return true;
-	}
-
-	void skipWhitespaces(std::istream& ifs) {
-
-		while (ifs.peek() == ' ') {
-			ifs.ignore();
-		}
-	}
-}
+#include "../Utilities/Helper.h"
 
 JsonValue* JsonValueFactory::jsonValueFactory(JsonValueType type)
 {
@@ -89,7 +74,7 @@ JsonValue* JsonValueFactory::jsonValueFactory(JsonValueType type, std::istream& 
 
 JsonValue* JsonValueFactory::parseValue(std::istream& ifs)
 {
-	skipWhitespaces(ifs);
+	Helper::skipWhitespaces(ifs);
 	char ch = ifs.peek(); // Read the next character
 
 	if (ch == '{') {
@@ -101,7 +86,7 @@ JsonValue* JsonValueFactory::parseValue(std::istream& ifs)
 	else if (ch == '\"') {
 		return jsonValueFactory(JsonValueType::MYSTRING, ifs);
 	}
-	else if (ch == '-' || isDigit(ch)) {
+	else if (ch == '-' || Helper::isDigit(ch)) {
 		return jsonValueFactory(JsonValueType::NUMBER, ifs);
 	}
 	else if (ch == 't' || ch == 'f') {
@@ -128,7 +113,7 @@ JsonValue* JsonValueFactory::parseObject(std::istream& ifs)
 		MyString key;
 		parseKey(ifs, key);
 
-		skipWhitespaces(ifs);
+		Helper::skipWhitespaces(ifs);
 		JsonValue* value = parseValue(ifs);//try catch
 
 		object->addElement(key, value);
@@ -169,7 +154,7 @@ JsonValue* JsonValueFactory::parseArray(std::istream& ifs)
 
 void JsonValueFactory::parseKey(std::istream& ifs, MyString& key)
 {
-	skipWhitespaces(ifs);
+	Helper::skipWhitespaces(ifs);
 	char tempKey[1024];
 	ifs.ignore();//reading '\"'
 	ifs.getline(tempKey, 1024, '\"'); //key

@@ -5,5 +5,11 @@ Open::Open(SharedPtr<JsonFileHandler>& fileHandler,const MyString& filename) :Co
 
 void Open::execute()
 {
-	fileHandler->open(filename);
+	try {
+		fileHandler->open(filename);
+	}
+	catch (std::invalid_argument& e) {
+		std::cout << e.what();
+	}
+	
 }

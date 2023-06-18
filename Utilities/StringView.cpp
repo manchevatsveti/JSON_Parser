@@ -16,6 +16,26 @@ char StringView::operator[](size_t index) const
 	return _begin[index];
 }
 
+bool StringView::operator==(const StringView& other) const
+{
+	size_t size = length();
+
+	if (size != other.length()) {
+		return false;
+	}
+
+	for (int i = 0; i < size; i++) {
+		if ((*this)[i] != other[i]) {
+			return false;
+		}
+	}
+}
+
+bool StringView::operator!=(const StringView& other) const
+{
+	return !(this->operator==(other));
+}
+
 StringView StringView::substr(size_t from, size_t length) const
 {
 	if (_begin + from + length > _end)

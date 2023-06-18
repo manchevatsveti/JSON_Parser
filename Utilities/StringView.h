@@ -1,6 +1,6 @@
 #pragma once
 #include <fstream>
-#include "Utilities/MyString.h"
+#include "MyString.h"
 class StringView
 {
 	const char* _begin;
@@ -14,9 +14,11 @@ public:
 	size_t length() const;
 	char operator[](size_t ind) const;
 
+	bool operator==(const StringView& other) const;
+	bool operator!=(const StringView& other) const;
+
 	StringView substr(size_t from, size_t length) const;
 	friend std::ostream& operator<<(std::ostream&, const StringView& strView);
-
 };
 
 //TODO: implement comparison operators 

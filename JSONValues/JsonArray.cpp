@@ -19,7 +19,7 @@ void JsonArray::removeValue(size_t index)
 	values.popAt(index);
 }
 
-JsonValueType JsonArray::getTypeByIndex(unsigned index) const
+const JsonValueType& JsonArray::getTypeByIndex(unsigned index) const
 {
 	return values[index]->getType();
 }

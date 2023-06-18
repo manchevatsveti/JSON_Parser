@@ -1,12 +1,16 @@
 #include "Exit.h"
 
-static MyString EXIT_MSG = "The program was terminated.";
+static const char* EXIT_MSG = "The program was terminated.";
 
 Exit::Exit(SharedPtr<JsonFileHandler>& fileHandler):Command(fileHandler){}
 
 void Exit::execute()
 {
 	fileHandler->close();
-	std::cout << EXIT_MSG;
-	throw std::exception("end");
+	throw exit_exc();
+}
+
+char const* exit_exc::what() const
+{
+	return EXIT_MSG;
 }

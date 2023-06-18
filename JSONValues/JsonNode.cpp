@@ -69,7 +69,7 @@ const JsonValue* JsonNode::getValue() const
     return value;
 }
 
-JsonValue* JsonNode::getValue()
+JsonValue*& JsonNode::getValue()
 {
     return value;
 }

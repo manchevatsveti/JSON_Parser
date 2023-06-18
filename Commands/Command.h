@@ -2,6 +2,7 @@
 #include "../JsonFileHandler.h"
 #include "../Utilities/SharedPtr.hpp"
 
+
 enum class CommandType
 {
 	OPEN,
@@ -10,9 +11,12 @@ enum class CommandType
 	SAVE_AS,
 	HELP,
 	EXIT,
-	VALIDATE,
 	PRINT,
-	SEARCH_BY_KEY
+	SEARCH_BY_KEY,
+	SET,
+	CREATE,
+	DELETE,
+	MOVE
 };
 
 class Command
@@ -24,5 +28,8 @@ public:
 	Command() = default;//???
 	Command(SharedPtr<JsonFileHandler>& fileHandler);
 	virtual void execute() = 0;
+
+	virtual ~Command()=default;
+	//virtual Command* clone() const =0;
 };
 

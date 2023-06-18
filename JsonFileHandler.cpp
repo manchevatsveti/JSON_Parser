@@ -1,8 +1,15 @@
 #include "JsonFileHandler.h"
 #include "Factory/JsonValueFactory.h"
+#include "Utilities/Helper.h"
+#include "Utilities/Validation.h"
 #include <fstream>
 
 static MyString CLOSED_FILE_MSG = "The file was closed. Please open a new one or exit the program!";
+
+bool JsonFileHandler::isValidFile(const MyString& fileContent) const
+{
+    return Validation::isValidObject(fileContent.c_str());
+}
 
 JsonFileHandler::JsonFileHandler():_filename(),obj(nullptr){}
 
@@ -12,8 +19,13 @@ JsonObject* JsonFileHandler::readJsonFile(const MyString& filename)
     if (!file.is_open()) {
         throw std::runtime_error("Could not open the output file");
     }
+    
+    MyString fileContent(Helper::getFileContent(file));
+    if (!isValidFile(fileContent)) {
+        throw std::invalid_argument("Invalid JSON file!");
+    }
 
-    JsonObject* rootValue = dynamic_cast<JsonObject*>(JsonValueFactory::parseValue(file));
+    JsonObject* rootValue = static_cast<JsonObject*>(JsonValueFactory::parseValue(file));
 
     file.close();
     return rootValue;
@@ -27,6 +39,7 @@ void JsonFileHandler::open(const MyString& filename)
 
 void JsonFileHandler::close()
 {
+    delete obj;
     obj = nullptr;
     std::cout << CLOSED_FILE_MSG << std::endl;
 }

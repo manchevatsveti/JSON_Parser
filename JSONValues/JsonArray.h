@@ -15,7 +15,7 @@ public:
 	void addValue(JsonValue* value);
 	void removeValue(size_t index);
 
-	JsonValueType getTypeByIndex(unsigned index) const;
+	const JsonValueType& getTypeByIndex(unsigned index) const;
 
 	JsonValue* clone() const override;
 

@@ -1,59 +1,43 @@
 #include "CommandFactory.h"
-#include "../Utilities/MyString.h"
-#include "../Commands/Print.h"
-#include "../Commands/SearchByKey.h"
-#include "../Commands/Set.h"
-#include "../Commands/Create.h"
-#include "../Commands/Delete.h"
-#include "../Commands/Move.h"
-#include "../Commands/Open.h"
-#include "../Commands/Close.h"
-#include "../Commands/Exit.h"
-#include "../Commands/SaveAs.h"
-#include "../JsonFileHandler.h"
-#include "../Utilities/SharedPtr.hpp"
-#include <sstream>
-
-const size_t COMMANDS_COUNT = 13;
-static const MyString commands[COMMANDS_COUNT] = { "open","close","save","saveas","help","exit",
-                                                 "validate","print","search","set","create","delete","move" };
 
 
-namespace {
-    bool isDigit(const char ch) {
-        if (ch < '0' || ch>'9') {
-            return false;
-        }
-        return true;
+const CommandType& CommandFactory::getCommandType(const MyString& command)
+{
+    if (command == "open") {
+        return CommandType::OPEN;
+    }else if (command == "close") {
+        return CommandType::CLOSE;
     }
-
-    void skipWhitespaces(std::stringstream& ss) {
-
-        while (ss.peek() == ' ') {
-            ss.ignore();
-        }
+    else if (command == "save") {
+        return CommandType::SAVE;
     }
-
-    void removeQuotes(MyString& str) {
-        str = str.substr(1, str.length() - 2);
+    else if (command == "saveas") {
+        return CommandType::SAVE_AS;
     }
-
-    void readValue(std::stringstream& ss, MyString& str) {
-        skipWhitespaces(ss);
-        char searchedKey[1024];
-        ss.getline(searchedKey, 1024, '\t');
-        str = std::move(searchedKey);//move op= of MyString
-        removeQuotes(str);
+    else if (command == "help") {
+        return CommandType::HELP;
     }
-
-    void readData(std::stringstream& ss, MyString& str) {
-        skipWhitespaces(ss);
-        ss.ignore();//reading '\"'
-        char searchedKey[1024];
-        ss.getline(searchedKey, 1024, '\"');
-        str = std::move(searchedKey);//move op= of MyString
+    else if (command == "exit") {
+        return CommandType::EXIT;
     }
-
+    else if (command == "print") {
+        return CommandType::PRINT;
+    }
+    else if (command == "search") {
+        return CommandType::SEARCH_BY_KEY;
+    }
+    else if (command == "set") {
+        return CommandType::SET;
+    }
+    else if (command == "create") {
+        return CommandType::CREATE;
+    }
+    else if (command == "delete") {
+        return CommandType::DELETE;
+    }
+    else if (command == "move") {
+        return CommandType::MOVE;
+    }
 }
 
 Command* CommandFactory::getCommand()
@@ -66,73 +50,75 @@ Command* CommandFactory::getCommand()
 
     static SharedPtr<JsonFileHandler> fileHandler = new JsonFileHandler();
     
-    for (int i = 0; i < COMMANDS_COUNT; i++) {
-        if (command == commands[i]) {
-            return commandFactory(i + 1, ss, fileHandler);
-        }
-    }
-
-    return nullptr;
+    return commandFactory(getCommandType(command), ss, fileHandler);
+  
+    return nullptr;//validation
 }
 
-Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss, SharedPtr<JsonFileHandler>& fileHandler)
+Command* CommandFactory::commandFactory( CommandType type, std::stringstream& ss, SharedPtr<JsonFileHandler>& fileHandler)
 {
-    switch (typeNumber) {
-    case 1: {
+    switch (type) {
+    case CommandType::OPEN: {
         MyString filename;
-        readData(ss, filename);
+        Helper::readData(ss, filename);
 
        return new Open(fileHandler,filename);
     }
-    case 2: {
+    case CommandType::CLOSE: {
         return new Close(fileHandler);
-    }case 4: {
-        MyString filename;
-        readData(ss, filename);
+    }case CommandType::SAVE: {
         MyString filepath;
-        readData(ss, filepath);
+        Helper::readData(ss, filepath);
+
+        return new Save(fileHandler,filepath);
+    }
+    case CommandType::SAVE_AS: {
+        MyString filename;
+        Helper::readData(ss, filename);
+        MyString filepath;
+        Helper::readData(ss, filepath);
 
         return new SaveAs(fileHandler,filename, filepath);
     }
-    case 6: {
+    case CommandType::EXIT: {
         return new Exit(fileHandler);
     }
-    case 8: {
+    case CommandType::PRINT: {
         return new Print(fileHandler);
     }
-    case 9: {
+    case CommandType::SEARCH_BY_KEY: {
         MyString searchedKey;
-        readData(ss, searchedKey);
+        Helper::readData(ss, searchedKey);
         
         return new SearchByKey(fileHandler, searchedKey);
     }
-    case 10: {
+    case CommandType::SET: {
         MyString filepath;
-        readData(ss, filepath);
+        Helper::readData(ss, filepath);
         MyString newValue;
-        readData(ss, newValue);
+        Helper::readData(ss, newValue);
 
         return new Set(fileHandler, filepath,newValue);
     }
-    case 11: {
+    case CommandType::CREATE: {
         MyString filepath;
-        readData(ss, filepath);
+        Helper::readData(ss, filepath);
         MyString newValue;
-        readValue(ss, newValue);
+        Helper::readValue(ss, newValue);
 
       return new Create(fileHandler, filepath, newValue);
     }
-    case 12: {
+    case CommandType::DELETE: {
         MyString filepath;
-        readData(ss, filepath);
+        Helper::readData(ss, filepath);
 
         return new Delete(fileHandler, filepath);
     }
-    case 13: {
+    case CommandType::MOVE: {
         MyString filepathFrom;
-        readData(ss, filepathFrom);
+        Helper::readData(ss, filepathFrom);
         MyString filepathTo;
-        readData(ss, filepathTo);
+        Helper::readData(ss, filepathTo);
 
         return new Move(fileHandler, filepathFrom, filepathTo);
     }

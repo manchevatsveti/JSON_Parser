@@ -22,7 +22,6 @@ public:
 	void addElement(const MyString& key,JsonValue* value);
 	void removeElement(size_t index);
 
-	size_t getNodesCount() const;
 	const JsonValue* getElement(int index) const;
 	size_t getIndexByKey(const MyString& key) const;
 	

@@ -24,7 +24,7 @@ public:
 
 	const MyString& getKey() const;
 	const JsonValue* getValue() const;
-	JsonValue* getValue();
+	JsonValue*& getValue();
 
 	void setValue(JsonValue* newValue);
 };
