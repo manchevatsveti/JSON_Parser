@@ -10,6 +10,11 @@ void Exit::execute()
 	throw exit_exc();
 }
 
+Command* Exit::clone() const
+{
+	return new Exit(*this);
+}
+
 char const* exit_exc::what() const
 {
 	return EXIT_MSG;

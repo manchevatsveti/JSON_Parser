@@ -111,7 +111,7 @@ void JsonObject::print(std::ostream& ofs) const
 	size_t size = elements.getSize();
 
 	for (int i = 0; i < size; i++) {
-		ofs << "\"" << elements[i].getKey() << "\":";
+		ofs<< "\"" << elements[i].getKey() << "\":";
 		elements[i].getValue()->print(ofs);
 
 		if (i != size - 1) {

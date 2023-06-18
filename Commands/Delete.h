@@ -11,4 +11,5 @@ class Delete : public Command
 public:
 	Delete(SharedPtr<JsonFileHandler> fileHandler, const MyString& filepath);
 	void execute() override;
+	Command* clone() const override;
 };

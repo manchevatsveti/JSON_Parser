@@ -10,3 +10,8 @@ void SearchByKey::execute()
 
 }
 
+Command* SearchByKey::clone() const
+{
+	return new SearchByKey(*this);
+}
+

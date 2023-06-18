@@ -12,4 +12,5 @@ class Move : public Command
 public:
 	Move(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filePathFrom, const MyString& filePathTo);
 	void execute() override;
+	Command* clone() const override;
 };

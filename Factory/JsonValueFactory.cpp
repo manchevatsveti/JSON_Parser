@@ -38,17 +38,17 @@ JsonValue* JsonValueFactory::jsonValueFactory(JsonValueType type, std::istream& 
 		return new JsonNumber(value);
 
 	}
-	case JsonValueType::BOOL: //validation
+	case JsonValueType::BOOL: 
 	{
-		char ch = ifs.peek();
+		char buff[10];//it is a boolean (max 5 chars)
+		ifs.getline(buff, 10, ',');
+
 		bool value;
-		if (ch == 't') {
+		if (strcmp(buff,"true")==0) {
 			value = true;
-			//ifs.ignore(4);
 		}
 		else {
 			value = false;
-			//ifs.ignore(5);
 		}
 
 		return new JsonBool(value);
@@ -66,7 +66,7 @@ JsonValue* JsonValueFactory::jsonValueFactory(JsonValueType type, std::istream& 
 		return new JsonObject();
 
 	case JsonValueType::NULL_VALUE:
-		//ifs.ignore(4);
+		ifs.ignore(strlen("null") + 1);//ignoring null + ','
 		return new JsonNull();
 	}
 	return nullptr;
@@ -101,7 +101,7 @@ JsonValue* JsonValueFactory::parseValue(std::istream& ifs)
 
 JsonValue* JsonValueFactory::parseObject(std::istream& ifs)
 {
-	JsonObject* object = new JsonObject();//casting?
+	JsonObject* object = new JsonObject();
 	ifs.ignore();//reading "{"
 
 	while (!ifs.eof()) {
@@ -114,7 +114,7 @@ JsonValue* JsonValueFactory::parseObject(std::istream& ifs)
 		parseKey(ifs, key);
 
 		Helper::skipWhitespaces(ifs);
-		JsonValue* value = parseValue(ifs);//try catch
+		JsonValue* value = parseValue(ifs);
 
 		object->addElement(key, value);
 

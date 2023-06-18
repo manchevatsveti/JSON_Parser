@@ -11,4 +11,5 @@ class Set : public Command
 public:
 	Set(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filepath,const MyString& newValue);
 	void execute() override;
+	Command* clone() const override;
 };

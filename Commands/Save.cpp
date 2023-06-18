@@ -6,3 +6,8 @@ void Save::execute()
 {
 	fileHandler->save(filepath);
 }
+
+Command* Save::clone() const
+{
+	return new Save(*this);
+}

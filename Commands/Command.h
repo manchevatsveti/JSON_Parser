@@ -25,11 +25,11 @@ protected:
 	SharedPtr<JsonFileHandler>& fileHandler;
 
 public:
-	Command() = default;//???
+	Command() = default;
 	Command(SharedPtr<JsonFileHandler>& fileHandler);
 	virtual void execute() = 0;
 
 	virtual ~Command()=default;
-	//virtual Command* clone() const =0;
+	virtual Command* clone() const =0;
 };
 

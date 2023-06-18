@@ -15,4 +15,5 @@ class Exit : public Command
 public:
 	Exit(SharedPtr<JsonFileHandler>& fileHandler) ;
 	void execute() override;
+	Command* clone() const override;
 };

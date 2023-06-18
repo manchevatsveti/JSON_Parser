@@ -9,4 +9,5 @@ class Close : public Command
 public:
 	Close(SharedPtr<JsonFileHandler>& fileHandler);
 	void execute() override;
+	Command* clone() const override;
 };

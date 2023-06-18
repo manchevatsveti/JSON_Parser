@@ -13,3 +13,8 @@ void Open::execute()
 	}
 	
 }
+
+Command* Open::clone() const
+{
+	return new Open(*this);
+}

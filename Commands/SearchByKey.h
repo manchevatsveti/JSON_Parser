@@ -11,5 +11,6 @@ class SearchByKey : public Command
 public: 
 	SearchByKey(SharedPtr<JsonFileHandler>& fileHandler,const MyString& searchedKey);
 	void execute() override;
+	Command* clone() const override;
 };
 

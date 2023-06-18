@@ -14,9 +14,6 @@ const CommandType& CommandFactory::getCommandType(const MyString& command)
     else if (command == "saveas") {
         return CommandType::SAVE_AS;
     }
-    else if (command == "help") {
-        return CommandType::HELP;
-    }
     else if (command == "exit") {
         return CommandType::EXIT;
     }
@@ -69,7 +66,8 @@ Command* CommandFactory::commandFactory( CommandType type, std::stringstream& ss
     }
     case CommandType::CLOSE: {
         return new Close(fileHandler);
-    }case CommandType::SAVE: {
+    }
+    case CommandType::SAVE: {
         MyString filepath;
         Helper::readData(ss, filepath);
 

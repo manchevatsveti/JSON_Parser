@@ -6,3 +6,8 @@ void Print::execute()
 {
 	fileHandler->print(std::cout);
 }
+
+Command* Print::clone() const
+{
+	return new Print(*this);
+}

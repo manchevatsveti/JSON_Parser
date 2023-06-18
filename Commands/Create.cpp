@@ -7,3 +7,8 @@ void Create::execute()
 	fileHandler->createByKey(filepath, newValue);
 }
 
+Command* Create::clone() const
+{
+	return new Create(*this);
+}
+

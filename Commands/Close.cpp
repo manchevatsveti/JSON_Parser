@@ -6,3 +6,8 @@ void Close::execute()
 {
 	fileHandler->close();
 }
+
+Command* Close::clone() const
+{
+	return new Close(*this);
+}

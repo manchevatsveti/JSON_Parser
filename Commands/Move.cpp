@@ -6,3 +6,8 @@ void Move::execute()
 {
 	fileHandler->moveFromTo(filePathFrom, filePathTo);
 }
+
+Command* Move::clone() const
+{
+	return new Move(*this);
+}

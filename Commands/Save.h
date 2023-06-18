@@ -12,4 +12,5 @@ class Save : public Command
 public:
 	Save(SharedPtr<JsonFileHandler>& fileHandler,const MyString& filepath);
 	void execute() override;
+	Command* clone() const override;
 };

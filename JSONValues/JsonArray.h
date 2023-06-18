@@ -5,14 +5,13 @@
 
 class JsonArray : public JsonValue
 {
-	///Iterator for JsonArray????
 	Vector<SharedPtr<JsonValue>> values;
 
 public:
 	JsonArray();
 
-	void addValue(JsonValueType animalType);
-	void addValue(JsonValue* value);
+	void addValue(JsonValueType valuesType);
+	void addValue(SharedPtr<JsonValue> value);
 	void removeValue(size_t index);
 
 	const JsonValueType& getTypeByIndex(unsigned index) const;

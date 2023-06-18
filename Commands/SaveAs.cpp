@@ -6,3 +6,8 @@ void SaveAs::execute()
 {
 	fileHandler->saveAs(filepath, filename);
 }
+
+Command* SaveAs::clone() const
+{
+	return new SaveAs(*this);
+}

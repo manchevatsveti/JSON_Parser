@@ -9,7 +9,7 @@ void JsonArray::addValue(JsonValueType valuesType)
 	values.pushBack(JsonValueFactory::jsonValueFactory(valuesType));
 }
 
-void JsonArray::addValue(JsonValue* value)
+void JsonArray::addValue(SharedPtr<JsonValue> value)
 {
 	values.pushBack(value);
 }
@@ -69,6 +69,6 @@ const JsonValue* JsonArray::getElement(size_t index) const
 	if (index >= values.getSize()) {
 		throw std::out_of_range("Invalid index.");
 	}
-	return values[index].operator->();////NE!!
+	return values[index].operator->();
 }
 

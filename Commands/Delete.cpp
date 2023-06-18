@@ -6,3 +6,8 @@ void Delete::execute()
 {
 	fileHandler->deleteBypath(filepath);
 }
+
+Command* Delete::clone() const
+{
+	return new Delete(*this);
+}

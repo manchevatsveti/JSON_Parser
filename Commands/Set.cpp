@@ -7,3 +7,8 @@ void Set::execute()
 	fileHandler->setByKey(filepath, newValue);
 	
 }
+
+Command* Set::clone() const
+{
+	return new Set(*this);
+}

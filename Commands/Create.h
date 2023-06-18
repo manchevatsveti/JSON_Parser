@@ -10,5 +10,6 @@ class Create : public Command
 public:
 	Create(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filepath, const MyString& newValue);
 	void execute() override;
+	Command* clone() const override;
 };
 

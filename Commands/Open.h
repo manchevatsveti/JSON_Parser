@@ -11,4 +11,5 @@ class Open : public Command
 public:
 	Open(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filename);
 	void execute() override;
+	Command* clone() const override;
 };
