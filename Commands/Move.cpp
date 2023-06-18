@@ -1,8 +1,8 @@
 #include "Move.h"
 
-Move::Move(JsonObject* obj, const MyString& filePathFrom, const MyString& filePathTo):Command(obj),filePathFrom(filePathFrom), filePathTo(filePathTo){}
+Move::Move(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filePathFrom, const MyString& filePathTo):Command(fileHandler),filePathFrom(filePathFrom), filePathTo(filePathTo){}
 
-void Move::execute() const
+void Move::execute()
 {
-	obj->moveFromTo(filePathFrom, filePathTo);
+	fileHandler->moveFromTo(filePathFrom, filePathTo);
 }

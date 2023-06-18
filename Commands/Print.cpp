@@ -1,8 +1,8 @@
 #include "Print.h"
 
-Print::Print(JsonObject* obj) :Command(obj) {}
+Print::Print(SharedPtr<JsonFileHandler>& fileHandler) :Command(fileHandler) {}
 
-void Print::execute() const
+void Print::execute()
 {
-	obj->print(std::cout);
+	fileHandler->print(std::cout);
 }

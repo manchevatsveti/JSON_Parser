@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../Factory/CommandFactory.h"
+#include "Factory/CommandFactory.h"
 
 int main() {
 	

@@ -5,6 +5,6 @@
 class Print : public Command
 {
 public:
-	Print(JsonObject* obj);
-	void execute() const override;
+	Print(SharedPtr<JsonFileHandler>& fileHandler);
+	void execute() override;
 };

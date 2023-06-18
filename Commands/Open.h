@@ -7,9 +7,8 @@
 class Open : public Command
 {
 	MyString filename;
-	JsonObject*& obj;
 
 public:
-	Open(JsonObject*& obj, const MyString& filename);
-	void execute() const override;
+	Open(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filename);
+	void execute() override;
 };

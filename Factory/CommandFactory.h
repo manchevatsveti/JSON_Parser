@@ -5,8 +5,9 @@
 
 class CommandFactory
 {
+
 public:
 	static Command* getCommand();
-	static Command* commandFactory(int typeNumber,std::stringstream& ss,JsonObject*& obj);
+	static Command* commandFactory(int typeNumber,std::stringstream& ss, SharedPtr<JsonFileHandler>& fileHandler);
 };
 

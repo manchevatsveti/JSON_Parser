@@ -1,9 +1,9 @@
 #include "Create.h"
 
-Create::Create(JsonObject* obj, const MyString& filepath, const MyString& newValue) :Command(obj), filepath(filepath), newValue(newValue) {}
+Create::Create(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filepath, const MyString& newValue) :Command(fileHandler), filepath(filepath), newValue(newValue) {}
 
-void Create::execute() const
+void Create::execute()
 {
-	obj->createByKey(filepath, newValue);
+	fileHandler->createByKey(filepath, newValue);
 }
 

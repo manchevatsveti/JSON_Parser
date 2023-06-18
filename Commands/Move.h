@@ -10,6 +10,6 @@ class Move : public Command
 	MyString filePathTo;
 
 public:
-	Move(JsonObject* obj, const MyString& filePathFrom, const MyString& filePathTo);
-	void execute() const override;
+	Move(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filePathFrom, const MyString& filePathTo);
+	void execute() override;
 };

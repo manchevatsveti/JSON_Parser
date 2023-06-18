@@ -1,10 +1,9 @@
 #include "Open.h"
 #include "../JsonFileHandler.h"
 
-Open::Open(JsonObject*& obj,const MyString& filename) :obj(obj),filename(filename) {}
+Open::Open(SharedPtr<JsonFileHandler>& fileHandler,const MyString& filename) :Command(fileHandler),filename(filename) {}
 
-void Open::execute() const
+void Open::execute()
 {
-	JsonFileHandler jh;
-	obj = dynamic_cast<JsonObject*>(jh.readJsonFile(filename));
+	fileHandler->open(filename);
 }

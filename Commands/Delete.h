@@ -7,7 +7,8 @@
 class Delete : public Command
 {
 	MyString filepath;
+
 public:
-	Delete(JsonObject* obj, const MyString& filepath);
-	void execute() const override;
+	Delete(SharedPtr<JsonFileHandler> fileHandler, const MyString& filepath);
+	void execute() override;
 };

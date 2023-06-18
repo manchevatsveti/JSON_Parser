@@ -9,7 +9,7 @@ class SearchByKey : public Command
 	MyString searchedKey;
 
 public: 
-	SearchByKey(JsonObject* obj,const MyString& searchedKey);
-	void execute() const override;
+	SearchByKey(SharedPtr<JsonFileHandler>& fileHandler,const MyString& searchedKey);
+	void execute() override;
 };
 

@@ -9,7 +9,9 @@
 #include "../Commands/Open.h"
 #include "../Commands/Close.h"
 #include "../Commands/Exit.h"
+#include "../Commands/SaveAs.h"
 #include "../JsonFileHandler.h"
+#include "../Utilities/SharedPtr.hpp"
 #include <sstream>
 
 const size_t COMMANDS_COUNT = 13;
@@ -62,40 +64,47 @@ Command* CommandFactory::getCommand()
     std::cin.getline(buff, 1024, '\n');
     std::stringstream ss(buff);
 
-    static JsonObject* obj;
+    static SharedPtr<JsonFileHandler> fileHandler = new JsonFileHandler();
     
     for (int i = 0; i < COMMANDS_COUNT; i++) {
         if (command == commands[i]) {
-            return commandFactory(i + 1, ss, obj);
+            return commandFactory(i + 1, ss, fileHandler);
         }
     }
 
     return nullptr;
 }
 
-Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,JsonObject*& obj)
+Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss, SharedPtr<JsonFileHandler>& fileHandler)
 {
     switch (typeNumber) {
     case 1: {
         MyString filename;
         readData(ss, filename);
 
-       return new Open(obj,filename);
+       return new Open(fileHandler,filename);
     }
     case 2: {
-        return new Close(obj);
+        return new Close(fileHandler);
+    }case 4: {
+        MyString filename;
+        readData(ss, filename);
+        MyString filepath;
+        readData(ss, filepath);
+
+        return new SaveAs(fileHandler,filename, filepath);
     }
     case 6: {
-        return new Exit();
+        return new Exit(fileHandler);
     }
     case 8: {
-        return new Print(obj);
+        return new Print(fileHandler);
     }
     case 9: {
         MyString searchedKey;
         readData(ss, searchedKey);
         
-        return new SearchByKey(obj, searchedKey);
+        return new SearchByKey(fileHandler, searchedKey);
     }
     case 10: {
         MyString filepath;
@@ -103,7 +112,7 @@ Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,Js
         MyString newValue;
         readData(ss, newValue);
 
-        return new Set(obj, filepath,newValue);
+        return new Set(fileHandler, filepath,newValue);
     }
     case 11: {
         MyString filepath;
@@ -111,13 +120,13 @@ Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,Js
         MyString newValue;
         readValue(ss, newValue);
 
-      return new Create(obj, filepath, newValue);
+      return new Create(fileHandler, filepath, newValue);
     }
     case 12: {
         MyString filepath;
         readData(ss, filepath);
 
-        return new Delete(obj, filepath);
+        return new Delete(fileHandler, filepath);
     }
     case 13: {
         MyString filepathFrom;
@@ -125,7 +134,7 @@ Command* CommandFactory::commandFactory(int typeNumber, std::stringstream& ss,Js
         MyString filepathTo;
         readData(ss, filepathTo);
 
-        return new Move(obj, filepathFrom, filepathTo);
+        return new Move(fileHandler, filepathFrom, filepathTo);
     }
     }
     return nullptr;

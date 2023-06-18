@@ -9,6 +9,6 @@ class Set : public Command
 	MyString filepath;
 	MyString newValue;
 public:
-	Set(JsonObject* obj, const MyString& filepath,const MyString& newValue);
-	void execute() const override;
+	Set(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filepath,const MyString& newValue);
+	void execute() override;
 };

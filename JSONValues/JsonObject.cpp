@@ -1,6 +1,7 @@
 #include "JsonObject.h"
 #include "JsonArray.h"
 #include "../Factory/JsonValueFactory.h"
+#include "../JsonFileHandler.h"
 #include <iostream>
 #include <sstream>
 
@@ -68,6 +69,17 @@ const JsonValue* JsonObject::getValueFromPath(const MyString& filepath)
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
 		temp->getValueFromPath(subFilepath);
 	}
+}
+
+const void JsonObject::writeToFile(const MyString& filename) const
+{
+	std::ofstream file(filename.c_str());
+	if (!file.is_open()) {
+		throw std::runtime_error("Could not open the output file");
+	}
+	print(file);
+
+	file.close();
 }
 
 JsonObject::JsonObject() : JsonValue(JsonValueType::OBJECT){}
@@ -211,6 +223,27 @@ void JsonObject::moveFromTo(const MyString& filePathFrom,const MyString& filePat
 	setValueFromPath(filePathTo, valueFrom->clone());
 
 	deleteBypath(filePathFrom);
+}
+
+void JsonObject::saveAs(const MyString& filepath, const MyString& filename) 
+{
+	int indexSlashSymbol = findLastIndex(filepath);
+	if (indexSlashSymbol == -1) {
+		if (getIndexByKey(filepath) == -1) {
+			throw std::logic_error("This value does not exist!");
+		}
+		
+		if (getTypeByIndex(getIndexByKey(filepath)) == JsonValueType::OBJECT) {//we can only save objects to files
+			JsonObject* newObj = static_cast<JsonObject*>(elements[getIndexByKey(filepath)].getValue());
+			newObj->writeToFile(filename);
+		}
+	}
+	else {
+		MyString rootPath = filepath.substr(0, indexSlashSymbol);
+		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
+		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
+		temp->saveAs(subFilepath,filename);
+	}
 }
 
 JsonNode& JsonObject::operator[](size_t index)

@@ -1,5 +1,6 @@
 #pragma once
-#include "../JSONValues/JsonObject.h"
+#include "../JsonFileHandler.h"
+#include "../Utilities/SharedPtr.hpp"
 
 enum class CommandType
 {
@@ -17,10 +18,11 @@ enum class CommandType
 class Command
 {
 protected:
-	JsonObject* obj;
+	SharedPtr<JsonFileHandler>& fileHandler;
+
 public:
-	Command();
-	Command(JsonObject* obj);
-	virtual void execute() const = 0;
+	Command() = default;//???
+	Command(SharedPtr<JsonFileHandler>& fileHandler);
+	virtual void execute() = 0;
 };
 

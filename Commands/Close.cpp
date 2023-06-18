@@ -1,11 +1,8 @@
 #include "Close.h"
 
-static MyString CLOSED_FILE_MSG = "The file was closed. Please open a new one or exit the program!";
+Close::Close(SharedPtr<JsonFileHandler>& fileHandler):Command(fileHandler){}
 
-Close::Close(JsonObject*& obj):obj(obj){}
-
-void Close::execute() const
+void Close::execute()
 {
-	obj = nullptr;
-	std::cout << CLOSED_FILE_MSG;
+	fileHandler->close();
 }

@@ -7,8 +7,9 @@
 class SaveAs : public Command
 {
 	MyString filepath;
+	MyString filename;
 
 public:
-	SaveAs(JsonObject* obj, const MyString& filepath);
-	void execute() const override;
+	SaveAs(SharedPtr<JsonFileHandler>& fileHandler, const MyString& filename, const MyString& filepath);
+	void execute() override;
 };

@@ -7,6 +7,6 @@
 class Exit : public Command
 {
 public:
-	Exit() = default;
-	void execute() const override;
+	Exit(SharedPtr<JsonFileHandler>& fileHandler) ;
+	void execute() override;
 };

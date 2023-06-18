@@ -6,8 +6,7 @@
 
 class Close : public Command
 {
-	JsonObject*& obj;
 public:
-	Close(JsonObject*& obj);
-	void execute() const override;
+	Close(SharedPtr<JsonFileHandler>& fileHandler);
+	void execute() override;
 };
