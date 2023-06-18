@@ -24,6 +24,8 @@ public:
 
 	JsonValueType getType() const;
 
+
 	virtual void print(std::ostream& ofs) const = 0;
+	virtual void writeToFile(std::ostream& ofs) const = 0;
 };
 

@@ -16,3 +16,8 @@ void JsonMyString::print(std::ostream& ofs) const
 {
 	ofs <<"\""<< value << "\"";
 }
+
+void JsonMyString::writeToFile(std::ostream& ofs) const
+{
+	print(ofs);
+}

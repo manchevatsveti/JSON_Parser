@@ -14,3 +14,8 @@ void JsonNull::print(std::ostream& ofs) const
 {
     ofs << "null";
 }
+
+void JsonNull::writeToFile(std::ostream& ofs) const
+{
+    print(ofs);
+}

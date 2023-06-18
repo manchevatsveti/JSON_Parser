@@ -24,10 +24,7 @@ bool Validation::isValidObject(const StringView& value)
 	size_t size = Helper::getContainerSize(obj);
 
 	for (int i = 0; i < size; i++) {
-		std::cout << obj << std::endl;
 		size_t currentEnd = Helper::getNextElementIndex(obj);
-
-		std::cout << obj.substr(0, currentEnd) << std::endl;
 
 		if (isValidNode(obj.substr(0, currentEnd)) == false) {
 			return false;

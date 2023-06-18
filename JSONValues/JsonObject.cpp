@@ -43,7 +43,7 @@ void JsonObject::setValueFromPath(const MyString& filepath, JsonValue* newValue)
 {
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) { //"name"
-		if (getIndexByKey(filepath) == -1) {
+		if (getIndexByKey(filepath) == -1 && filepath != "") {
 			throw std::invalid_argument("This value does not exist!");
 		}
 		elements[getIndexByKey(filepath)].setValue(newValue);
@@ -60,7 +60,7 @@ const JsonValue* JsonObject::getValueFromPath(const MyString& filepath)
 {
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) { 
-		if (getIndexByKey(filepath) == -1) {
+		if (getIndexByKey(filepath) == -1 && filepath != "") {
 			throw std::invalid_argument("This value does not exist!");
 		}
 		return elements[getIndexByKey(filepath)].getValue();
@@ -73,13 +73,13 @@ const JsonValue* JsonObject::getValueFromPath(const MyString& filepath)
 	}
 }
 
-const void JsonObject::writeToFile(const MyString& filename) const
+const void JsonObject::openFileForWriting(const MyString& filename) const
 {
 	std::ofstream file(filename.c_str());
 	if (!file.is_open()) {
 		throw std::runtime_error("Could not open the output file");
 	}
-	print(file);
+	writeToFile(file);
 
 	file.close();
 }
@@ -122,6 +122,23 @@ void JsonObject::print(std::ostream& ofs) const
 	ofs << "}" << std::endl;
 }
 
+void JsonObject::writeToFile(std::ostream& ofs) const
+{
+	ofs << "{";
+
+	size_t size = elements.getSize();
+
+	for (int i = 0; i < size; i++) {
+		ofs << "\"" << elements[i].getKey() << "\":";
+		elements[i].getValue()->writeToFile(ofs);
+
+		if (i != size - 1) {
+			ofs << ", ";
+		}
+	}
+	ofs << "}";
+}
+
 void JsonObject::printByKey(const MyString& searchedKey) const
 {
 	bool keyExists = false;
@@ -145,7 +162,7 @@ void JsonObject::printByKey(const MyString& searchedKey) const
 const JsonValue* JsonObject::getElement(int index) const
 {
 	if (index > elements.getSize()) {
-		throw std::out_of_range("invalid index entered.");
+		throw std::out_of_range("Invalid index entered.");
 	}
 	return elements[index].getValue();
 
@@ -172,7 +189,7 @@ void JsonObject::setByKey(const MyString& filepath, const MyString& newValue)
 	std::stringstream ss(newValue.c_str());
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) {
-		if (getIndexByKey(filepath) == -1) {
+		if (getIndexByKey(filepath) == -1 && filepath != "") {
 			throw std::invalid_argument("This value does not exists!");
 		}
 		elements[getIndexByKey(filepath)].setValue(JsonValueFactory::parseValue(ss));
@@ -212,7 +229,7 @@ void JsonObject::deleteBypath(const MyString& filepath)
 {
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) {
-		if (getIndexByKey(filepath) == -1) {
+		if (getIndexByKey(filepath) == -1 && filepath != "") {
 			throw std::invalid_argument("This value does not exist!");
 		}
 
@@ -239,13 +256,16 @@ void JsonObject::saveAs(const MyString& filepath, const MyString& filename)
 {
 	int indexSlashSymbol = findLastIndex(filepath);
 	if (indexSlashSymbol == -1) {
-		if (getIndexByKey(filepath) == -1) {
+		if (getIndexByKey(filepath) == -1 && filepath!="") {
 			throw std::invalid_argument("This value does not exist!");
 		}
-		
-		if (getTypeByIndex(getIndexByKey(filepath)) == JsonValueType::OBJECT) {//we can only save objects to files
+
+		if (filepath == "") {
+			openFileForWriting(filename);
+		}
+		else if (getTypeByIndex(getIndexByKey(filepath)) == JsonValueType::OBJECT) {//we can only save objects to files
 			JsonObject* newObj = static_cast<JsonObject*>(elements[getIndexByKey(filepath)].getValue());
-			newObj->writeToFile(filename);
+			newObj->openFileForWriting(filename);
 		}
 	}
 	else {

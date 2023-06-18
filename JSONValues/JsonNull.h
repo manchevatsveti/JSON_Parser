@@ -8,5 +8,6 @@ public:
 	JsonValue* clone() const override;
 
 	void print(std::ostream& ofs) const override;
+	void writeToFile(std::ostream& ofs) const override;
 };
 

@@ -21,3 +21,8 @@ void JsonBool::print(std::ostream& ofs) const
         ofs << "false";
     }
 }
+
+void JsonBool::writeToFile(std::ostream& ofs) const
+{
+    print(ofs);
+}

@@ -16,3 +16,8 @@ void JsonNumber::print(std::ostream& ofs) const
 {
 	ofs << value;
 }
+
+void JsonNumber::writeToFile(std::ostream& ofs) const
+{
+	print(ofs);
+}

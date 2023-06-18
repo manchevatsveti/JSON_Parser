@@ -14,7 +14,7 @@ class JsonObject : public JsonValue
 	void setValueFromPath(const MyString& filepath, JsonValue* newValue);
 	const JsonValue* getValueFromPath(const MyString& filepath);
 
-	const void writeToFile(const MyString& filename) const;
+	const void openFileForWriting(const MyString& filename) const;
 public:
 	JsonObject();
 	JsonValue* clone() const override;
@@ -26,6 +26,7 @@ public:
 	size_t getIndexByKey(const MyString& key) const;
 	
 	void print(std::ostream& ofs) const override;
+	void writeToFile(std::ostream& ofs) const override;
 	void printByKey(const MyString& searchedKey) const;
 	void setByKey(const MyString& filepath, const MyString& newValue);
 	void createByKey(const MyString& filepath, const MyString& newValue);

@@ -38,6 +38,10 @@ const CommandType& CommandFactory::getCommandType(const MyString& command)
     else if (command == "move") {
         return CommandType::MOVE;
     }
+    else {
+
+        throw::std::invalid_argument("This command does not exist!");
+    }
 }
 
 Command* CommandFactory::getCommand()
@@ -52,7 +56,6 @@ Command* CommandFactory::getCommand()
     
     return commandFactory(getCommandType(command), ss, fileHandler);
   
-    return nullptr;//validation
 }
 
 Command* CommandFactory::commandFactory( CommandType type, std::stringstream& ss, SharedPtr<JsonFileHandler>& fileHandler)
@@ -123,5 +126,5 @@ Command* CommandFactory::commandFactory( CommandType type, std::stringstream& ss
         return new Move(fileHandler, filepathFrom, filepathTo);
     }
     }
-    return nullptr;
+   
 }

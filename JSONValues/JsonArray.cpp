@@ -38,10 +38,25 @@ void JsonArray::print(std::ostream& ofs) const
 		values[i]->print(ofs);
 
 		if (i != size - 1) {
-			ofs << ", " << std::endl;
+			std::cout << ", " << std::endl;
 		}
 	}
 	ofs << "]" << std::endl;
+}
+
+void JsonArray::writeToFile(std::ostream& ofs) const
+{
+	ofs << "[";
+	size_t size = values.getSize();
+
+	for (int i = 0; i < size; i++) {
+		values[i]->writeToFile(ofs);
+
+		if (i != size - 1) {
+			ofs << ", ";
+		}
+	}
+	ofs << "]";
 }
 
 size_t JsonArray::getSize() const
