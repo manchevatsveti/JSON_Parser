@@ -15,7 +15,7 @@ public:
 	static void readValue(std::stringstream& ss, MyString& str);
 	static  void readData(std::stringstream& ss, MyString& str);
 
-	static size_t getFileLength(std::ifstream& ifs);
+	static size_t getFileLength(std::ifstream& ifs);//github.com/Angeld55
 	static MyString getFileContent(std::ifstream& ifs);
 
 	static size_t getNextElementIndex(const StringView& obj);

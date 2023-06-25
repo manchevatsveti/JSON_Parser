@@ -125,7 +125,7 @@ bool Validation::isValidNumber(const StringView& value)
 
 	size_t size = value.length();
 
-	for (int i = beg; i, size; i++) {
+	for (int i = beg; i<size; i++) {
 		if (!Helper::isDigit(value[i])) {
 			return false;
 		}

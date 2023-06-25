@@ -19,12 +19,13 @@ JsonObject* JsonFileHandler::readJsonFile(const MyString& filename)
     if (!file.is_open()) {
         throw std::runtime_error("Could not open the output file");
     }
-    
-    MyString fileContent(Helper::getFileContent(file));
-    if (!isValidFile(fileContent)) {
-        throw std::invalid_argument("Invalid JSON file!");
-    }
+        MyString fileContent(Helper::getFileContent(file));
 
+        if (!isValidFile(fileContent)) {
+            throw std::invalid_argument("Invalid JSON file!");
+        }
+    
+    
     JsonObject* rootValue = static_cast<JsonObject*>(JsonValueFactory::parseValue(file));
 
     file.close();

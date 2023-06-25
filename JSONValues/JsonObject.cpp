@@ -168,9 +168,9 @@ const JsonValue* JsonObject::getElement(int index) const
 
 }
 
-size_t JsonObject::getIndexByKey(const MyString& key)const
+int JsonObject::getIndexByKey(const MyString& key)const
 {
-	size_t size = elements.getSize();
+	int size = elements.getSize();
 
 	for (int i = 0; i < size; i++) {
 		if (elements[i].getKey() == key) {
@@ -182,7 +182,7 @@ size_t JsonObject::getIndexByKey(const MyString& key)const
 
 void JsonObject::setByKey(const MyString& filepath, const MyString& newValue)
 {
-	if (!Validation::isValidValue(Helper::removeQuotes(MyString(newValue)))) {
+	if (!Validation::isValidValue(newValue)) {
 		throw std::invalid_argument("Invalid value!");
 	}
 
@@ -211,7 +211,7 @@ void JsonObject::createByKey(const MyString& filepath, const MyString& newValue)
 			throw std::invalid_argument("This value already exists!");
 		}
 		else if (getIndexByKey(filepath) != -1 && getTypeByIndex(getIndexByKey(filepath)) == JsonValueType::ARRAY) {
-			JsonArray* arr = static_cast<JsonArray*>(elements[getIndexByKey(filepath)].getValue());
+			JsonArray* arr = dynamic_cast<JsonArray*>(elements[getIndexByKey(filepath)].getValue());
 			arr->addValue(JsonValueFactory::parseValue(ss));
 		}else {
 			elements.pushBack(JsonNode(filepath, JsonValueFactory::parseValue(ss)));
@@ -219,7 +219,11 @@ void JsonObject::createByKey(const MyString& filepath, const MyString& newValue)
 	}
 	else {
 		MyString rootPath = filepath.substr(0, indexSlashSymbol);
-		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
+		int index = getIndexByKey(rootPath);
+		if (index == -1) {
+			throw std::invalid_argument("The filepath is invalid!");
+		}
+		JsonObject* temp = dynamic_cast<JsonObject*>(elements[index].getValue());
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
 		temp->createByKey(subFilepath, newValue);
 	}

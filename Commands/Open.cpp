@@ -8,6 +8,9 @@ void Open::execute()
 	try {
 		fileHandler->open(filename);
 	}
+	catch (std::runtime_error& e) {
+		std::cout << e.what();
+	}
 	catch (std::invalid_argument& e) {
 		std::cout << e.what();
 	}

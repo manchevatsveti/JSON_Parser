@@ -14,6 +14,8 @@ class JsonObject : public JsonValue
 	void setValueFromPath(const MyString& filepath, JsonValue* newValue);
 	const JsonValue* getValueFromPath(const MyString& filepath);
 
+	//JsonObject* getObjByPath(const MyString& filepath, int indexSlashSymbol);
+
 	const void openFileForWriting(const MyString& filename) const;
 public:
 	JsonObject();
@@ -23,7 +25,7 @@ public:
 	void removeElement(size_t index);
 
 	const JsonValue* getElement(int index) const;
-	size_t getIndexByKey(const MyString& key) const;
+	int getIndexByKey(const MyString& key) const;
 	
 	void print(std::ostream& ofs) const override;
 	void writeToFile(std::ostream& ofs) const override;
