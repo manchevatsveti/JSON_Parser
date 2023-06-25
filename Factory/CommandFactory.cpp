@@ -97,7 +97,7 @@ Command* CommandFactory::commandFactory( CommandType type, std::stringstream& ss
         MyString filepath;
         Helper::readData(ss, filepath);
         MyString newValue;
-        Helper::readData(ss, newValue);
+        Helper::readValue(ss, newValue);
 
         return new Set(fileHandler, filepath,newValue);
     }

@@ -92,7 +92,7 @@ bool Validation::isValidArray(const StringView& value)
 
 bool Validation::isValidBool(const StringView& value)
 {
-	if (value[0] != 't' || value[0] != 'f') {
+	if (value[0] != 't' && value[0] != 'f') {
 		return false;
 	}
 

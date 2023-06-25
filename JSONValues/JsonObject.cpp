@@ -66,11 +66,20 @@ const JsonValue* JsonObject::getValueFromPath(const MyString& filepath)
 		return elements[getIndexByKey(filepath)].getValue();
 	}
 	else {
-		MyString rootPath = filepath.substr(0, indexSlashSymbol);
-		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
-		temp->getValueFromPath(subFilepath);
+		getObjByPath(filepath, indexSlashSymbol)->getValueFromPath(subFilepath);
 	}
+}
+
+JsonObject* JsonObject::getObjByPath(const MyString& filepath, int indexSlashSymbol)
+{
+	MyString rootPath = filepath.substr(0, indexSlashSymbol);
+	int index = getIndexByKey(rootPath);
+	if (index == -1) {
+		throw std::invalid_argument("The filepath is invalid!");
+	}
+	JsonObject* temp = dynamic_cast<JsonObject*>(elements[index].getValue());
+	return temp;
 }
 
 const void JsonObject::openFileForWriting(const MyString& filename) const
@@ -195,10 +204,8 @@ void JsonObject::setByKey(const MyString& filepath, const MyString& newValue)
 		elements[getIndexByKey(filepath)].setValue(JsonValueFactory::parseValue(ss));
 	}
 	else {
-		MyString rootPath = filepath.substr(0, indexSlashSymbol);
-		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol-1);
-		temp->setByKey(subFilepath, newValue);
+		getObjByPath(filepath, indexSlashSymbol)->setByKey(subFilepath, newValue);
 	}
 }
 
@@ -218,14 +225,8 @@ void JsonObject::createByKey(const MyString& filepath, const MyString& newValue)
 		}
 	}
 	else {
-		MyString rootPath = filepath.substr(0, indexSlashSymbol);
-		int index = getIndexByKey(rootPath);
-		if (index == -1) {
-			throw std::invalid_argument("The filepath is invalid!");
-		}
-		JsonObject* temp = dynamic_cast<JsonObject*>(elements[index].getValue());
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
-		temp->createByKey(subFilepath, newValue);
+		getObjByPath(filepath,indexSlashSymbol)->createByKey(subFilepath, newValue);
 	}
 }
 
@@ -240,10 +241,8 @@ void JsonObject::deleteBypath(const MyString& filepath)
 		removeElement(getIndexByKey(filepath));
 	}
 	else {
-		MyString rootPath = filepath.substr(0, indexSlashSymbol);
-		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
-		temp->deleteBypath(subFilepath);
+		getObjByPath(filepath, indexSlashSymbol)->deleteBypath(subFilepath);
 	}
 }
 
@@ -273,10 +272,8 @@ void JsonObject::saveAs(const MyString& filepath, const MyString& filename)
 		}
 	}
 	else {
-		MyString rootPath = filepath.substr(0, indexSlashSymbol);
-		JsonObject* temp = dynamic_cast<JsonObject*>(elements[getIndexByKey(rootPath)].getValue());
 		MyString subFilepath = filepath.substr(indexSlashSymbol + 1, filepath.length() - indexSlashSymbol - 1);
-		temp->saveAs(subFilepath,filename);
+		getObjByPath(filepath, indexSlashSymbol)->saveAs(subFilepath,filename);
 	}
 }
 

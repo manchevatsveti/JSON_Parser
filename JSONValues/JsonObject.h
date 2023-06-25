@@ -14,7 +14,7 @@ class JsonObject : public JsonValue
 	void setValueFromPath(const MyString& filepath, JsonValue* newValue);
 	const JsonValue* getValueFromPath(const MyString& filepath);
 
-	//JsonObject* getObjByPath(const MyString& filepath, int indexSlashSymbol);
+	JsonObject* getObjByPath(const MyString& filepath, int indexSlashSymbol);
 
 	const void openFileForWriting(const MyString& filename) const;
 public:

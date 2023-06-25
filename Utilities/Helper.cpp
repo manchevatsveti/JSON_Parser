@@ -40,6 +40,7 @@ void Helper::readData(std::stringstream& ss, MyString& str)
 	char searchedKey[1024];
 	ss.getline(searchedKey, 1024, '\"');
 	str = std::move(searchedKey);//move op= of MyString
+	str.substr(0, str.length() - 1);
 }
 
 size_t Helper::getFileLength(std::ifstream& file)
