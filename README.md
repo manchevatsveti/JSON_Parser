@@ -6,6 +6,7 @@
 **Year**: 2023/2024  
 
 This project implements a system for working with JSON files. It reads, manipulates, and performs operations on JSON data structures. 
+
 **Note**: The use of libraries for handling JSON is not allowed in this project. The goal is to construct an appropriate tree-like representation of the data in memory and implement operations on it.
 
 ## Functionalities
